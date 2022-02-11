@@ -1,4 +1,5 @@
 const express = require('express');
+const { redirect } = require('express/lib/response');
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(express.json());
 app.post("/login", (req, res) => {
   const dados = req.body;
   const foundUser = false;
+  console.log("login");
 
   users.forEach((user) => {
     if((user.login === dados.login) && (user.password === dados.password)){
@@ -38,22 +40,28 @@ app.post("/login", (req, res) => {
 });
 
 app.get("/listar-favoritos", (req, res) => {
-  const dados = req.params.token.split("_@_");
-  
+  const dados = req.header('Authentication').split("_@_");
+  let userFound = false;
+  console.log("listar-favoritos");
   users.forEach((user) => {
     if((user.login === dados[0]) && (user.password === dados[1])){
       res.send(JSON.stringify({ 
         favorites:  favorites.find((favorite) => favorite.userId === user.id).favorites 
       }));
+      userFound = true;
     }
   });
+  if(!userFound){
+    res.status(404).send("Usuário não encontrado");
+  }
 });
 
 app.post("/adicionar-favorito", (req, res) => {
-  const dados = req.params.token.split("_@_");
+  const dados = req.header('Authentication').split("_@_");
+  
   const id = req.body;
   let userId = 0;
-
+  console.log("adicionar-favorito");
   users.forEach((user) => {
     if((user.login === dados[0]) && (user.password === dados[1])){
       userId = user.id;
@@ -68,10 +76,10 @@ app.post("/adicionar-favorito", (req, res) => {
 });
 
 app.delete("/remover-favorito", (req, res) => {
-  const dados = req.params.token.split("_@_");
+  const dados = req.header('Authentication').split("_@_");
   const id = req.body;
   let userId = 0;
-
+  console.log("remover-favorito");
   users.forEach((user) => {
     if((user.login === dados[0]) && (user.password === dados[1])){
       userId = user.id;
