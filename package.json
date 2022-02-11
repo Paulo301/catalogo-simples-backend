@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "express": "^4.17.2"
+  },
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "name": "catalogo-simples-backend",
+  "version": "1.0.0",
+  "main": "server.js",
+  "repository": "git@github.com:Paulo301/catalogo-simples-backend.git",
+  "author": "Paulo301 <paulovictor1918@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
