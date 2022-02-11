@@ -13,11 +13,10 @@ app.use(express.json());
 app.post("/login", (req, res) => {
   const dados = req.body;
   let foundUser = false;
-  console.log("login");
 
   users.forEach((user) => {
     if((user.login === dados.login) && (user.password === dados.password)){
-      res.send(JSON.stringify({ token: user.login+"_@_"+user.password }));
+      res.send(JSON.stringify({ token: user.login+"@"+user.password }));
       foundUser = true;
     } else if((user.login === dados.login)){
       res.status(401).send("Senha incorreta");
@@ -34,15 +33,15 @@ app.post("/login", (req, res) => {
       }
     );
     favorites.push({ userId: newId, favorites: []});
-    res.send(JSON.stringify({ token: dados.login+"_@_"+dados.password }));
+    res.send(JSON.stringify({ token: dados.login+"@"+dados.password }));
   }
 
 });
 
 app.get("/listar-favoritos", (req, res) => {
-  const dados = req.header('Authentication').split("_@_");
+  const dados = req.header('Authentication').split("@");
   let userFound = false;
-  console.log("listar-favoritos");
+  
   users.forEach((user) => {
     if((user.login === dados[0]) && (user.password === dados[1])){
       res.send(JSON.stringify({ 
@@ -57,11 +56,11 @@ app.get("/listar-favoritos", (req, res) => {
 });
 
 app.post("/adicionar-favorito", (req, res) => {
-  const dados = req.header('Authentication').split("_@_");
+  const dados = req.header('Authentication').split("@");
   let userFound = false;
   const id = req.body;
   let userId = 0;
-  console.log("adicionar-favorito");
+  
   users.forEach((user) => {
     if((user.login === dados[0]) && (user.password === dados[1])){
       userId = user.id;
@@ -83,11 +82,11 @@ app.post("/adicionar-favorito", (req, res) => {
 });
 
 app.delete("/remover-favorito", (req, res) => {
-  const dados = req.header('Authentication').split("_@_");
+  const dados = req.header('Authentication').split("@");
   const id = req.body;
   let userFound = false;
   let userId = 0;
-  console.log("remover-favorito");
+  
   users.forEach((user) => {
     if((user.login === dados[0]) && (user.password === dados[1])){
       userId = user.id;
@@ -105,7 +104,7 @@ app.delete("/remover-favorito", (req, res) => {
   });
 
   if(userFound){
-    res.send("Favorito cadastrado");
+    res.send("Favorito removido");
   } else{
     res.status(404).send("Usuário não encontrado");
   }
