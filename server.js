@@ -58,13 +58,14 @@ app.get("/listar-favoritos", (req, res) => {
 
 app.post("/adicionar-favorito", (req, res) => {
   const dados = req.header('Authentication').split("_@_");
-  
+  let userFound = false;
   const id = req.body;
   let userId = 0;
   console.log("adicionar-favorito");
   users.forEach((user) => {
     if((user.login === dados[0]) && (user.password === dados[1])){
       userId = user.id;
+      userFound = true;
     }
   });
 
@@ -73,16 +74,24 @@ app.post("/adicionar-favorito", (req, res) => {
       return {...favorite, favorites: [...favorite.favorites, id.id]}
     }
   });
+  if(userFound){
+    res.send("Favorito cadastrado");
+  } else{
+    res.status(404).send("Usuário não encontrado");
+  }
+  
 });
 
 app.delete("/remover-favorito", (req, res) => {
   const dados = req.header('Authentication').split("_@_");
   const id = req.body;
+  let userFound = false;
   let userId = 0;
   console.log("remover-favorito");
   users.forEach((user) => {
     if((user.login === dados[0]) && (user.password === dados[1])){
       userId = user.id;
+      userFound = true;
     }
   });
 
@@ -94,6 +103,12 @@ app.delete("/remover-favorito", (req, res) => {
       }
     }
   });
+
+  if(userFound){
+    res.send("Favorito cadastrado");
+  } else{
+    res.status(404).send("Usuário não encontrado");
+  }
 });
 
 app.listen(porta, () => {
