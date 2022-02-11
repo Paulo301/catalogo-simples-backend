@@ -12,7 +12,7 @@ app.use(express.json());
 
 app.post("/login", (req, res) => {
   const dados = req.body;
-  const foundUser = false;
+  let foundUser = false;
   console.log("login");
 
   users.forEach((user) => {
