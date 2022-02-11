@@ -35,7 +35,6 @@ app.post("/login", (req, res) => {
     favorites.push({ userId: newId, favorites: []});
     res.send(JSON.stringify({ token: dados.login+"@"+dados.password }));
   }
-
 });
 
 app.get("/listar-favoritos", (req, res) => {
@@ -59,7 +58,7 @@ app.post("/adicionar-favorito", (req, res) => {
   const dados = req.header('Authentication').split("@");
   let userFound = false;
   const id = req.body;
-  let userId = 0;
+  let userId = -1;
   
   users.forEach((user) => {
     if((user.login === dados[0]) && (user.password === dados[1])){
@@ -68,12 +67,12 @@ app.post("/adicionar-favorito", (req, res) => {
     }
   });
 
-  favorites = favorites.map((favorite) => {
-    if(favorite.userId === userId){
-      return {...favorite, favorites: [...favorite.favorites, id.id]}
-    }
-  });
   if(userFound){
+    favorites = favorites.map((favorite) => {
+      if(favorite.userId === userId){
+        return {...favorite, favorites: [...favorite.favorites, id.id]}
+      }
+    });
     res.send("Favorito cadastrado");
   } else{
     res.status(404).send("Usuário não encontrado");
@@ -85,7 +84,7 @@ app.delete("/remover-favorito", (req, res) => {
   const dados = req.header('Authentication').split("@");
   const id = req.body;
   let userFound = false;
-  let userId = 0;
+  let userId = -1;
   
   users.forEach((user) => {
     if((user.login === dados[0]) && (user.password === dados[1])){
@@ -94,16 +93,15 @@ app.delete("/remover-favorito", (req, res) => {
     }
   });
 
-  favorites = favorites.map((favorite) => {
-    if(favorite.userId === userId){
-      return {
-        ...favorite, 
-        favorites: favorite.favorites.filter((fav) => fav !== id.id)
-      }
-    }
-  });
-
   if(userFound){
+    favorites = favorites.map((favorite) => {
+      if(favorite.userId === userId){
+        return {
+          ...favorite, 
+          favorites: favorite.favorites.filter((fav) => fav !== id.id)
+        }
+      }
+    });
     res.send("Favorito removido");
   } else{
     res.status(404).send("Usuário não encontrado");
